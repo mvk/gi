@@ -17,8 +17,8 @@ l1=['100','95','90','85']
 l2=['ppi','reg','met','int']
 l3=['babu','butland']
 l4=['deg','bet','jc','complete']
-l5=['csv']
-l6=['cold','mix']
+l5 = ['cold/training','cold/test', 'mix']
+l6 = ['csv']
 
 for a in l1:
 	for b in l2:

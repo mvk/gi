@@ -12,7 +12,7 @@ l1 = ['100', '95', '90', '85']
 l2 = ['ppi', 'reg', 'met', 'int']
 l3 = ['babu', 'butland']
 l4 = ['deg', 'bet', 'complete']
-l5 = ['cold', 'mix']
+l5 = ['cold/training','cold/test', 'mix']
 l6 = ['csv']
 
 
@@ -105,7 +105,7 @@ for a in l1:  #['100','95','90','85']
                     output.append(lineout)
                 except Exception as inst:
                     print inst.args
-            address = "%s/%s/%s/complete/csv/training.csv" % (a, b, c)
+            address = "%s/%s/%s/complete/training.csv" % (a, b, c)
             savefile(output, address)
 
 
