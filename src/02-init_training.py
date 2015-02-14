@@ -11,7 +11,7 @@ folder = finput.readline().rstrip("\n")
 l1=['100','95','90','85']
 l2=['ppi','reg','met','int']
 l3=['babu','butland']
-l4=['deg','bet','jc','complete']
+l4=['deg','bet','complete']
 l5=['cold','mix']
 l6=['csv']
 
@@ -19,42 +19,47 @@ l6=['csv']
 ################################################
 
 def readlist(c):
-	f_pairs = open(folder + c +".tab")
-	header - f_pairs.readline();
+	f_pairs = open(folder+"files/" + c +"score.tab")
+	header = f_pairs.readline();
 	dic_pairs = {} #dictionary of gene pairs
 	for line in f_pairs:
 		d = line.split()
-		dic_pairs[(d[0],d[1])]=float(d[2])
+		dic_pairs[(d[0],d[1])]=(d[2])
 	f_pairs.close()
+	return dic_pairs
 
-dic_pairs_babu = readlist(l1[0])
-dic_pairs_butland = readlist(l1[1])
+dic_pairs_babu = readlist(l3[0])
+dic_pairs_butland = readlist(l3[1])
 
 #################################################
 
+def savefile(lista, address):
+	f = open(folder+address,'w')
+	for line in lista:
+		f.write(line)
 
 
 
 for a in l1: #['100','95','90','85']
 	#define the sub-network percentage
-	p = float(a)/100
+	per = float(a)/100
 
 	for b in l2: #['ppi','reg','met','int']
 		#read interaction file, shuffle, keep it in a list
 		l_int = [] #interaction list
-		fint = open(folder+b+".tab")
+		fint = open(folder+"files/"+b+".tab")
 		for line in fint:
 			d = line.split()
 			l_int.append((d[0],d[1]))
 		rm.shuffle(l_int)
 		#take only a percetage
 		size = len(l_int)
-		last = int(p*size)
+		last = int(per*size)
 		l_int = l_int[0:last] #replace list with only percentage
 			#Build network
 		G = None
 		if b == "reg" or b == "met":
-			G = nx.DiGraph()
+			G = nx.Graph()
 		else:
 			G = nx.Graph()
 		for elem in l_int:
@@ -65,34 +70,50 @@ for a in l1: #['100','95','90','85']
 		dic_jc_babu = {}
 		dic_jc_butland = {}
 
+
+
 		for c in l3: #['babu','butland']
-			if c == "babu":
-				for p in dic_pairs_babu:
+			this_dic = eval("dic_pairs_"+c)
+			listatuplas = this_dic.keys()
+			try:
+				preds=nx.jaccard_coefficient(G,listatuplas)
+			except Exception as ex:
+				print ex,a,b,c,"  __jaccard"
+
+			for u, v, p in preds:
+				if u in G:
 					try:
-						dic_jc_babu[p]=nx.jaccard_coefficient(G, [p[0], p[1]])
-					except:
-						print a,b,c,"  __jaccard"
+						exec("dic_jc_"+c+"[(u,v)]=p")
+					except Exception as ex:
+						print ex.args
 
-				for d in l4:   #['deg','bet','jc','complete']
-					output=[]
-					if d == "deg":
-						output.append("gene1,gene2,degree,score\n")
-						for pa in dic_pairs_babu
-
-
-
-
-
-
-
-
-
-			else:
-				for p in dic_pairs_butland:
+			#generate a complete training as a dictionary
+			output=[]
+			output.append("gene1,gene2,deg_min,deg_max,bet_min,bet_max,jc,score\n")
+			t_dic = eval("dic_pairs_"+c)
+			for pa in t_dic.keys():
 					try:
-						dic_jc_butland[p]=nx.jaccard_coefficient(G, [p[0], p[1]])
-					except:
-						print a,b,c,"  __jaccard"
+						degs = [dic_deg[pa[0]],dic_deg[pa[1]]]
+						bets = [dic_bet[pa[0]],dic_bet[pa[1]]]
+						jc = eval("dic_jc_"+c)
+						degs.sort()
+						bets.sort()
+						lineout = pa[0]+","+pa[1]+','+str(degs[0])+','+str(degs[1])+','\
+								  					 +str(bets[0])+','+str(bets[1])+','\
+													 +str(jc[pa])+','+str(t_dic[pa])+'\n'
+
+						output.append(lineout)
+					except Exception as inst:
+						print inst.args
+			address = "%s/%s/%s/complete/csv/training.csv" % (a,b,c)
+			savefile(output, address)
+
+
+
+
+
+
+
 
 
 

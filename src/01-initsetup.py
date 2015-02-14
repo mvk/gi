@@ -12,12 +12,13 @@ def makedir(namedir):
 		os.makedirs(namedir)
 
 #Levels
+
 l1=['100','95','90','85']
-l2=['babu','butland']
-l3=['ppi','reg','met','int']
+l2=['ppi','reg','met','int']
+l3=['babu','butland']
 l4=['deg','bet','jc','complete']
-l5=['cold','mix']
-l6=['csv']
+l5=['csv']
+l6=['cold','mix']
 
 for a in l1:
 	for b in l2:
