@@ -9,7 +9,7 @@ folder = finput.readline().rstrip("\n")
 
 l1 = ['100', '95', '90', '85']
 l2 = ['ppi', 'reg', 'met', 'int']
-l3 = [ 'butland']
+l3 = [ 'babu','butland']
 l4 = ['deg', 'bet', 'complete']
 l5 = ['cold/training','cold/test', 'mix']
 l6 = ['csv']
