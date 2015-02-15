@@ -1,7 +1,7 @@
 # ################################
 # AUTHOR: ESTHER CAMILO          #
-#e-mail: esthercamilo@gmail.com #
-#################################
+# e-mail: esthercamilo@gmail.com #
+# ################################
 import random as rm
 
 finput = open("config.txt")
@@ -26,6 +26,30 @@ for a in l1:
 				for line in fcomplete:
 					listacomplete.append(line)
 
+				#####  generate mix training ######
+				l_agg1 = []
+				l_all1 = []
+				for v in listacomplete:
+					d = v.split(',')
+					score = d[-1].rstrip()
+					if float(score) < 0:
+						l_agg1.append(v.replace(score, "AGG"))
+					else:
+						l_all1.append(v.replace(score, "ALL"))
+
+				s11 = len(l_agg1)
+				s22 = len(l_all1)
+				size1 = min(s11, s22)
+				for i in range(100):
+					output_mix = open(folder + path + "mix/csv/" + str(i + 1) + ".csv", "w")
+					output_mix.write(head_complete)
+					for j in range(size1 / 2):
+						output_mix.write(l_agg1[j])
+						output_mix.write(l_all1[j])
+
+
+
+				#####  generate cold training ######
 				rm.shuffle(listacomplete)
 
 				dic_unique = {}
@@ -46,15 +70,23 @@ for a in l1:
 				s1 = len(l_agg)
 				s2 = len(l_all)
 
-				size = min(s1,s2)
+				size = min(s1, s2)
 
 				for i in range(100):
-					output = open(folder + path+"cold/"+str(i+1)+".csv","w")
-					output.write(head_complete)
-					for j in range(size):
-						output.write(l_agg[j])
-					for j in range(size):
-						output.write(l_all[j])
+					output_train = open(folder + path + "cold/csv/" + str(i + 1) + "_train.csv", "w")
+					output_test = open(folder + path + "cold/csv/" + str(i + 1) + "_test.csv", "w")
+					output_train.write(head_complete)
+					output_test.write(head_complete)
+					for j in range(size / 2):
+						output_train.write(l_agg[j])
+						output_train.write(l_all[j])
+					for j in range(size / 2, size):
+						output_test.write(l_agg[j])
+						output_test.write(l_all[j])
+					output_train.close()
+					output_test.close()
+
+	print a, " done"
 
 
 
