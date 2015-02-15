@@ -56,8 +56,8 @@ for a in l1:
 		for c in l3:
 			for d in l4:
 				path = (folder+'%s/%s/%s/%s/' % (a, b, c, d))
-				#threadmetacold = Thread(target=metacold, args=([path]))
-				#threadmetacold.start()
+				threadmetacold = Thread(target=metacold, args=([path]))
+				threadmetacold.start()
 				threadmetamix = Thread(target=metamix, args=([path]))
 				threadmetamix.start()
 
