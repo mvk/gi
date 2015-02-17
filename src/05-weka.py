@@ -19,6 +19,10 @@ l6 = ['csv']
 
 end = 2
 
+def run_cmd_with_system(wekalocation, path, fpath):
+    command = "java -cp "+wekalocation+" weka.filters.unsupervised.attribute.Remove -R 1,2 -i "+path+ "csv/" + fpath + " -o "+ path + "arff/" + file.replace('csv','arff')
+    os.system(command)
+
 # Convert csv to arff
 def convert():
     print '***********CONVERTING FROM CSV TO ARFF - remove gene1 and gene2 attributes\n'
@@ -29,9 +33,8 @@ def convert():
                     for e in l5:
                         path = (folder+'%s/%s/%s/%s/%s/' % (a, b, c, d, e))
                         lista_files = os.listdir(path + 'csv/')
-                        for file in lista_files:
-                            command = "java -cp "+wekalocation+" weka.filters.unsupervised.attribute.Remove -R 1,2 -i "+path+ "csv/" + file + " -o "+ path + "arff/" + file.replace('csv','arff')
-                            os.system(command)
+                        for fpath in lista_files:
+                            run_cmd_with_system(wekalocation, path, fpath)
 
 convert()
 
