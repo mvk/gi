@@ -43,7 +43,7 @@ for a in l1:
 				print d
 			print c
 		print b
-	print a
+
 
 
 
