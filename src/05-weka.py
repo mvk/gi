@@ -5,6 +5,7 @@
 
 import os
 import sys
+from threading import Thread
 
 finput = open("config.txt")
 folder = finput.readline().rstrip("\n")
@@ -17,21 +18,32 @@ l4 = ['deg', 'bet', 'complete']
 l5 = ['cold', 'mix']
 l6 = ['csv']
 
-end = 2
+
+def weka(path):
+	if not os.path.exists(path+"csv/"+file.replace("csv","arff")):
+		command = "java -cp "+wekalocation+" weka.filters.unsupervised.attribute.Remove -R 1,2 -i "+path+ "csv/" + file + " -o "+ path + "arff/" + file.replace('csv','arff')
+		os.system(command)
+	else:
+		print "arff exists"
 
 # Convert csv to arff
-def convert():
-	print '***********CONVERTING FROM CSV TO ARFF - remove gene1 and gene2 attributes\n'
-	for a in l1:
-		for b in l2:
-			for c in l3:
-				for d in l4:
-					for e in l5:
-						path = (folder+'%s/%s/%s/%s/%s/' % (a, b, c, d, e))
-						lista_files = os.listdir(path + 'csv/')
-						for file in lista_files:
-							command = "java -cp "+wekalocation+" weka.filters.unsupervised.attribute.Remove -R 1,2 -i "+path+ "csv/" + file + " -o "+ path + "arff/" + file.replace('csv','arff')
-							os.system(command)
+for a in l1:
+	for b in l2:
+		for c in l3:
+			for d in l4:
+				for e in l5:
+					path = (folder+'%s/%s/%s/%s/%s/' % (a, b, c, d, e))
+					lista_files = os.listdir(path + 'csv/')
+					thr = []
+					for file in lista_files:
+						threadweka = Thread(target=weka, args=([path]))
+						thr.append(threadweka)
+					[x.start() for x in thr]
+					[x.join() for x in thr]
+				print d
+			print c
+		print b
+	print a
 
-convert()
+
 
