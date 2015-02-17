@@ -13,7 +13,7 @@ l4 = ['deg', 'bet', 'complete']
 l5 = ['cold', 'mix']
 l6 = ['csv']
 
-end = 101
+end = 2
 
 #cold uses training and test manualy
 def metacold(path):
@@ -21,7 +21,9 @@ def metacold(path):
 		test = path+'cold/arff/'+str(i)+'_test.arff'
 		train =path+'cold/arff/'+str(i)+'_train.arff'
 		result =path+'cold/result/'+str(i)+'.txt'
-		os.system('java -cp '+wekalocation+' -Xmx4000m weka.classifiers.meta.Vote \
+		print result
+		if not os.path.exists(result) or os.path.getsize(result) < 1.0:
+			os.system('java -cp '+wekalocation+' -Xmx4000m weka.classifiers.meta.Vote \
 	-B "weka.classifiers.meta.Bagging -P 100 -I 20 -W weka.classifiers.trees.REPTree -- -M 2 -V 0.0010 -N 3 -S 1 -L -1" \
 	-B "weka.classifiers.meta.Bagging -P 100 -I 20 -W weka.classifiers.trees.NBTree" \
 	-B "weka.classifiers.meta.Bagging -P 100 -I 20 -W weka.classifiers.trees.RandomTree -- -K 1 -M 1.0 -S 1" \
@@ -37,7 +39,10 @@ def metamix(path):
 	for i in range(1,end):
 		train =path+'mix/arff/'+str(i)+'.arff'
 		result =path+'mix/result/'+str(i)+'.txt'
-		os.system('java -cp '+wekalocation+' -Xmx4000m weka.classifiers.meta.Vote \
+		print result
+		if not os.path.exists(result) or os.path.getsize(result) < 1.0:
+
+			os.system('java -cp '+wekalocation+' -Xmx4000m weka.classifiers.meta.Vote \
 	-B "weka.classifiers.meta.Bagging -P 100 -I 20 -W weka.classifiers.trees.REPTree -- -M 2 -V 0.0010 -N 3 -S 1 -L -1" \
 	-B "weka.classifiers.meta.Bagging -P 100 -I 20 -W weka.classifiers.trees.NBTree" \
 	-B "weka.classifiers.meta.Bagging -P 100 -I 20 -W weka.classifiers.trees.RandomTree -- -K 1 -M 1.0 -S 1" \
@@ -53,14 +58,18 @@ def metamix(path):
 #Runs everything
 for a in l1:
 	for b in l2:
+		
 		for c in l3:
+
+			thr=[]
 			for d in l4:
 				path = (folder+'%s/%s/%s/%s/' % (a, b, c, d))
 				threadmetacold = Thread(target=metacold, args=([path]))
-				threadmetacold.start()
+				thr.append(threadmetacold)
 				threadmetamix = Thread(target=metamix, args=([path]))
-				threadmetamix.start()
-
-
+				thr.append(threadmetamix)
+			[x.start() for x in thr]
+			[x.join() for x in thr]	
+		
 
 

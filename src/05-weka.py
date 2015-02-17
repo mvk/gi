@@ -7,6 +7,7 @@
 import os
 import sys
 import subprocess
+from threading import Thread
 
 finput = open("config.txt")
 folder = finput.readline().rstrip("\n")
@@ -19,18 +20,16 @@ l4 = ['deg', 'bet', 'complete']
 l5 = ['cold', 'mix']
 l6 = ['csv']
 
-end = 2
 
-
-def run_cmd_with_system(wekalocation, path, fpath):
-    command = "java -cp "+wekalocation+" weka.filters.unsupervised.attribute.Remove -R 1,2 -i "+path+ "csv/" + fpath + " -o "+ path + "arff/" + file.replace('csv','arff')
+def run_cmd_with_system(weka_jar, path, fpath):
+    command = "java -cp "+weka_jar+" weka.filters.unsupervised.attribute.Remove -R 1,2 -i "+path+ "csv/" + fpath + " -o "+ path + "arff/" + fpath.replace('csv','arff')
     os.system(command)
 
 
-def run_cmd_with_popen(wekalocation, path, fpath):
+def run_cmd_with_popen(weka_jar, path, fpath):
     command_arr = [
         "java -cp",
-        wekalocation,
+        weka_jar,
         "weka.filters.unsupervised.attribute.Remove",
         "-R 1,2",
         "-i", os.path.join(path, "csv", fpath),
@@ -42,6 +41,18 @@ def run_cmd_with_popen(wekalocation, path, fpath):
         stderr=subprocess.PIPE
     )
     return proc.communicate()
+
+def weka(path, f, weka_jar):
+    trg = os.path.join(path, "csv", f.replace("csv","arff"))
+    if os.path.exists(trg):
+        print("arff exists")
+        return 0
+
+    return run_cmd_with_popen(
+        weka_jar,
+        f,
+        trg
+    )
 
 # Convert csv to arff
 def convert():
@@ -57,6 +68,12 @@ def convert():
                         for fpath in lista_files:
                             res = run_cmd_with_popen(wekalocation, path, fpath)
                             results.append(res.returncode)
+                        threadweka = Thread(target=weka, args=([fpath]))
+                        thr.append(threadweka)
+    [x.start() for x in thr]
+    [x.join() for x in thr]
 
 convert()
+
+
 
