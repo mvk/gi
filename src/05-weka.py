@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # ################################
 # AUTHOR: ESTHER CAMILO          #
 # e-mail: esthercamilo@gmail.com #
@@ -34,10 +35,11 @@ def run_cmd_with_popen(wekalocation, path, fpath):
         "-R 1,2",
         "-i", os.path.join(path, "csv", fpath),
         "-o", os.path.join(path, "arff", fpath.replace('csv','arff'))
+    ]
     proc = subprocess.Popen(
         command_arr,
-        stdout = subprocess.PIPE,
-        stderr = subprocess.PIPE
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE
     )
     return proc.communicate()
 
